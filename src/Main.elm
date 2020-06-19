@@ -2,12 +2,12 @@ module Main exposing (..)
 
 import Array exposing (..)
 import Browser
+import Browser.Events exposing (onAnimationFrameDelta)
 import Html exposing (Html)
 import Html.Attributes
-import Random exposing (int, initialSeed, generate)
+import Random exposing (int, generate)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
-import Time
 
 main =
   Browser.element
@@ -23,24 +23,23 @@ type alias Point =
   }
 
 type alias Model =
-  { seed : Random.Seed
-  , pts : List Point
+  { pts : List Point
   , lastPnt : Point
   , count : Int
   }
 
 init : () -> (Model, Cmd Msg)
 init _ =
-  ( Model (initialSeed 0) [Point 80 200] (Point 80 200) 1
+  ( Model [Point 80 200] (Point 80 200) 1
   , Cmd.none
   )
 
 toSVG : Point -> Svg msg
 toSVG point =
-  circle [ fill "#FFFFFF", cx (String.fromFloat point.x), cy (String.fromFloat point.y), r "1" ] []
+  circle [ fill "#FFFFFF", cx (String.fromFloat point.x), cy (String.fromFloat point.y), r "0.5" ] []
 
 type Msg =
-  Tick Time.Posix
+  Tick Float
   | Draw Int
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -84,7 +83,7 @@ randIdx = int 0 5
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Time.every 1 Tick
+    onAnimationFrameDelta Tick
 
 drawing: List Point -> Html msg
 drawing pts =
