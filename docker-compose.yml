@@ -1,0 +1,7 @@
+version: '2'
+
+services:
+  hex:
+    build: .
+    ports:
+      - 55099:8000
